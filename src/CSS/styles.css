@@ -1,0 +1,21 @@
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    color: lightgray
+}
+
+header{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    background-color: darkslateblue;
+    height: 48px;
+}
+
+
+
+
+
+
