@@ -10,131 +10,144 @@
     <header>
       <div id="search" class="container1">
         <!-- Search -->
-        <input type="text" />
+        <input type="text" placeholder="Search..." />
       </div>
-      <div id="profile_avatar">
+      <div id="profile">
         <!-- Profile Avatar Container -->
-        <div>
-          <!-- Profile Photo Container -->
-          <img />png
-        </div>
         <div>
           <!-- Drop Down Menu Icon -->
           <img />...
         </div>
+        <div id="profile--avatar">
+          <!-- Profile Photo Container -->
+          <img
+            src="./src/Img/profile.jpg"
+          />
+        </div>
       </div>
     </header>
-    <section>
-      <div>
+    <section id="main">
+      <!-- Sidepanel blok, trenutno ne prikazan - TOP -->
+      <div style="display: none" id="sidepanel" class="container2">
         <!-- SidePanel -->
         <div>
           <!-- SidePanel Options Icons -->
-          <div>
-            <!-- SidePanel Option Container -->
-            <div>
-              <!-- SidePanel Option 1 -->
-            </div>
-            <div>
-              <!-- SidePanel Option 2 -->
-            </div>
-            <div>
-              <!-- SidePanel Option 3 -->
-            </div>
+          <div class="icon">
+            <!-- SidePanel Option 1 -->
+            <img src="./src/Img/bell.svg" />Activity
           </div>
-          <div>
-            <!-- Help Icon -->
+          <div class="icon">
+            <!-- SidePanel Option 2 -->
+            <img src="./src/Img/chat-circle-text.svg" />Chat
           </div>
+          <div class="icon">
+            <!-- SidePanel Option 3 -->
+            <img src="./src/Img/calendar.png" />Calendar
+          </div>
+        </div>
+        <div>
+          <!-- Help Icon -->
+          <img src="./src/Img/bell.svg" />Activity
         </div>
       </div>
-      <div>
-        <!-- Main -->
-        <div>
+      <!-- Sidepanel blok, trenutno ne prikazan - BOTTOM -->
+
+      <section id="main--calendar">
+        <!-- Main Calendar -->
+        <div class="main--header">
           <!-- Main Header -->
-          <div>
-            <!-- Calendar Heading -->
-            <div>
-              <!-- Calendar Information Left -->
-              <div>
-                <!-- Calendar Icon -->
-              </div>
-              <div>
-                <!-- Calendar Title -->
-              </div>
-              <div>
-                <!-- Calendar Connect Link Google Calendar -->
-              </div>
+          <div class="heading--left container2">
+            <!-- Calendar Information Left -->
+            <div id="calendar--icon" 
+              class="icon"
+            >
+              <!-- Calendar Icon -->
+              <img
+                src="./src/Img/calendar.svg"
+              />
             </div>
             <div>
-              <!-- Calendar Functions Right -->
-              <div>
-                <!-- Join with an ID -->
-              </div>
-              <div>
-                <!-- Meet now -->
-              </div>
-              <div>
-                <!-- New Meeting -->
-              </div>
+              <!-- Calendar Title -->
+              <h3>Calendar</h3>
+            </div>
+            <div>
+              <!-- Calendar Connect Link Google Calendar -->
+              <a>Add Google Calendar</a>
             </div>
           </div>
+          <div class="heading--right container2">
+            <!-- Calendar Functions Right -->
+            <button>
+              <!-- Join with an ID -->
+              <img src="./src/Img/hash.svg" />
+              <a>Join with an ID</a>
+            </button>
+            <button>
+              <!-- Meet now -->
+              <img src="./src/Img/video-camera.svg" />
+              <a>Meet now</a>
+            </button>
+            <button id="new--meeting">
+              <!-- New Meeting -->
+              <img src="./src/Img/plus.svg" />
+              <a>New meeting</a>
+            </button>
+          </div>
         </div>
-        <div>
+        <div id="main--subheader">
           <!-- Main Sub Header -->
-          <div>
+          <div class="calendar--navigation container2">
             <!-- Calendar Nav Left-->
-            <div>
+            <div class="icon">
               <!-- Today Button -->
+              <img class="button--icon" src="./src/Img/calendar-plus.svg" />
+              <a>Today</a>
             </div>
             <div>
               <!-- Go back button -->
+                <img class="button--icon" src="./src/Img/caret-left.svg"/>
             </div>
             <div>
               <!-- Go forward button -->
+              <img class="button--icon" src="./src/Img/caret-right.svg"/>
             </div>
-            <div>
+            <div class="date--picker">
               <!-- Choose Date  -->
-              <div>
+              <div class="date--picker">
                 <!-- Date Display Container -->
                 <div>
                   <!-- Month -->
+                  July
                 </div>
                 <div>
                   <!-- Year -->
+                  2023
                 </div>
               </div>
               <div>
                 <!-- Drop Down Icon -->
+                <img class="button--icon" src="./src/Img/caret-down.svg">
               </div>
             </div>
           </div>
+        </section>
+        <section id="calendar">
           <div>
-            <!-- Calendar Day Span Choice Right -->
-            <div>
-              <div>
-                <!-- Day Span Display -->
-              </div>
-              <div>
-                <!-- Drop Down Icon -->
-              </div>
-            </div>
-          </div>
-        </div>
-        <div>
           <!-- Calendar Container -->
           <div>
             <!-- Calendar Days of Week-->
-          </div>
-          <div>
-            <!-- Calendar Fields -->
-            <div>
-              <!-- Calendar Time Panel -->
             </div>
             <div>
-              <!-- Calendar Day Time Fields -->
+              <!-- Calendar Fields -->
+              <div>
+                <!-- Calendar Time Panel -->
+              </div>
+              <div>
+                <!-- Calendar Day Time Fields -->
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+        </section>
     </section>
   </body>
 </html>
