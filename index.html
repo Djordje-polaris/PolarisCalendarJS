@@ -20,13 +20,11 @@
         </div>
         <div id="profile--avatar">
           <!-- Profile Photo Container -->
-          <img
-            src="./src/Img/profile.jpg"
-          />
+          <img src="./src/Img/profile.jpg" />
         </div>
       </div>
     </header>
-    <section id="main">
+    <div id="main">
       <!-- Sidepanel blok, trenutno ne prikazan - TOP -->
       <div style="display: none" id="sidepanel" class="container2">
         <!-- SidePanel -->
@@ -42,7 +40,7 @@
           </div>
           <div class="icon">
             <!-- SidePanel Option 3 -->
-            <img src="./src/Img/calendar.png" />Calendar
+            <img src="./src/Img/calendar.svg" />Calendar
           </div>
         </div>
         <div>
@@ -58,13 +56,9 @@
           <!-- Main Header -->
           <div class="heading--left container2">
             <!-- Calendar Information Left -->
-            <div id="calendar--icon" 
-              class="icon"
-            >
+            <div id="calendar--icon" class="icon">
               <!-- Calendar Icon -->
-              <img
-                src="./src/Img/calendar.svg"
-              />
+              <img src="./src/Img/calendar.svg" />
             </div>
             <div>
               <!-- Calendar Title -->
@@ -98,56 +92,46 @@
           <!-- Main Sub Header -->
           <div class="calendar--navigation container2">
             <!-- Calendar Nav Left-->
-            <div class="icon">
+            <div id="calendar--navigation--today" class="icon">
               <!-- Today Button -->
               <img class="button--icon" src="./src/Img/calendar-plus.svg" />
               <a>Today</a>
             </div>
             <div>
               <!-- Go back button -->
-                <img class="button--icon" src="./src/Img/caret-left.svg"/>
+              <img class="button--icon" src="./src/Img/caret-left.svg" />
             </div>
             <div>
               <!-- Go forward button -->
-              <img class="button--icon" src="./src/Img/caret-right.svg"/>
+              <img class="button--icon" src="./src/Img/caret-right.svg" />
             </div>
             <div class="date--picker">
               <!-- Choose Date  -->
               <div class="date--picker">
                 <!-- Date Display Container -->
-                <div>
+                <div id="date--picker-month">
                   <!-- Month -->
                   July
                 </div>
-                <div>
+                <div id="date--picker-year">
                   <!-- Year -->
                   2023
                 </div>
               </div>
               <div>
                 <!-- Drop Down Icon -->
-                <img class="button--icon" src="./src/Img/caret-down.svg">
+                <img class="button--icon" src="./src/Img/caret-down.svg" />
               </div>
             </div>
           </div>
-        </section>
-        <section id="calendar">
-          <div>
-          <!-- Calendar Container -->
-          <div>
-            <!-- Calendar Days of Week-->
-            </div>
-            <div>
-              <!-- Calendar Fields -->
-              <div>
-                <!-- Calendar Time Panel -->
-              </div>
-              <div>
-                <!-- Calendar Day Time Fields -->
-              </div>
-            </div>
-          </div>
-        </section>
-    </section>
+        </div>
+      </section>
+      <section id="calendar">
+        <div id="calendar--weekday">
+
+        </div>
+      </section>
+    </div>
+    <script src="./src/TS/main.ts" type="module"></script>
   </body>
 </html>
