@@ -81,6 +81,7 @@ const createCalendar = (days: number) => {
         let calendarField = document.createElement("div")
 
         calendarWeekDay.setAttribute("id", String(i));
+        calendarWeekDay.classList.add("column")
         calendarField.classList.add("field");
         calendarField.innerText = WeekDays[i - 1];
         calendarWeekDays?.appendChild(calendarWeekDay);
