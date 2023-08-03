@@ -1,8 +1,29 @@
 import dayjs from "dayjs";
 
-let currentDate = dayjs().format("DD/MM/YYYY");
+function getCurrentWeekMonday(currentDate: Date): Date {
+  const dayOfWeek = currentDate.getDay(); // 0 (Sunday) to 6 (Saturday)
+  const daysUntilMonday = (dayOfWeek + 6) % 7; // Number of days to the nearest past Monday
+
+  const currentWeekMonday = new Date(currentDate);
+  currentWeekMonday.setDate(currentDate.getDate() - daysUntilMonday);
+
+  return currentWeekMonday;
+}
+
+function getDayOfWeek(currentDate: Date, i: number): Date {
+  const nextDay = new Date(currentDate);
+  nextDay.setDate(currentDate.getDate() + i);
+  return nextDay;
+}
+
+let currentMonday = dayjs(getCurrentWeekMonday(new Date())).format(
+  "DD/MM/YYYY"
+);
+
+console.log(currentMonday);
 
 let calendarWeekDays = document.getElementById("calendar--weekday");
+let calendarHours = document.getElementById("calendar--hours");
 
 let WeekDays = [
   "Monday",
@@ -43,33 +64,38 @@ const coach: Schedule = {
 
 const createCalendar = (days: number) => {
   let calendarMatrix: String[7][23];
+  
   for (let i = 0; i <= days; i++) {
-    for (let j = 0; j <= 23; j++) {
-      if (i === 0 && j === 0) {
-        let calendarCorner = document.createElement("div");
-        calendarCorner.classList.add("field");
-      } else if (i !== 0 && j === 0) {
-        //Za skroz gornji red
-        let calendarDay = document.createElement("div");
-        calendarDay.setAttribute("id", String(i));
-        calendarDay.classList.add("field");
-        calendarDay.innerText = WeekDays[i-1];
-        calendarWeekDays?.appendChild(calendarDay);
-      } else if (i === 0 && j !== 0) {
+    let currentDate = getDayOfWeek(getCurrentWeekMonday(new Date()), i - 1);
+    for (let j = 0; j < 24; j++) {
+      if (i === 0) {
         //Za skroz levu kolonu
         let calendarHour = document.createElement("div");
-        calendarHour.setAttribute("id", String(j));
         calendarHour.classList.add("field");
         calendarHour.innerText = String(j);
+        calendarHours?.appendChild(calendarHour);
       }
+      if (i !== 0 && j === 0) {
+        //Za skroz gornji red
+        let calendarWeekDay = document.createElement("div");
+        let calendarField = document.createElement("div")
+
+        calendarWeekDay.setAttribute("id", String(i));
+        calendarField.classList.add("field");
+        calendarField.innerText = WeekDays[i - 1];
+        calendarWeekDays?.appendChild(calendarWeekDay);
+        calendarWeekDay.appendChild(calendarField)
+      }
+      console.log(i, j);
+
       let calendarField = document.createElement("div");
-      let calendarDay = document.getElementById(String(i))
-
-
-      calendarField.classList.add("field");
-      calendarField.setAttribute("id", currentDate);
-      calendarField.classList.add(String(j));
-      calendarDay?.appendChild(calendarField)
+      let calendarWeekDay = document.getElementById(String(i));
+      calendarField.innerText = String(i) + " " + String(j);
+      calendarField.classList.add(
+        "field",
+        dayjs(currentDate).format("DD/MM/YYYY")
+      );
+      calendarWeekDay?.appendChild(calendarField);
     }
   }
 };
