@@ -192,11 +192,12 @@ button img {
 .column {
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 
 .field {
   display: flex;
-  min-height: 50px;
+  min-height: 100px;
   background-color: white;
 
   justify-content: center;

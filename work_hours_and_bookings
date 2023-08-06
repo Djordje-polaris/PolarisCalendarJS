@@ -1,0 +1,40 @@
+{
+    "days": [
+        1,
+        2
+    ],
+    "startHour": 9,
+    "endHour": 17,
+    "bookings": [
+        {
+            "dayId": 1,
+            "bookings": []
+        },
+        {
+            "dayId": 2,
+            "bookings": []
+        },
+        {
+            "dayId": 3,
+            "bookings": []
+        },
+        {
+            "dayId": 4,
+            "bookings": [
+                16
+            ]
+        },
+        {
+            "dayId": 5,
+            "bookings": []
+        },
+        {
+            "dayId": 6,
+            "bookings": []
+        },
+        {
+            "dayId": 7,
+            "bookings": []
+        }
+    ]
+}
