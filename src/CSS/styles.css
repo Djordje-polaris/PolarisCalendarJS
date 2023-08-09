@@ -185,7 +185,7 @@ button img {
   gap: 1px;
 }
 
-#calendar--weekday {
+#calendar--weekdays {
   display: flex;
   flex: 1;
   flex-direction: row;
