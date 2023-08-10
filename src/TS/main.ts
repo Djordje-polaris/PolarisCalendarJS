@@ -41,6 +41,28 @@ const doesContain = (array: number[], predicate: number) => {
   return false;
 };
 
+const doesContainBooking = (array: Booking[], predicate: number) => {
+  for (let i = 0; i < array.length; i++) {
+    if (array[i].hourId === predicate) {
+      return true;
+    }
+  }
+  return false;
+};
+
+const checkBookingStatus = (
+  array: Booking[],
+  predicate: number,
+  status: boolean
+) => {
+  for (let i = 0; i < array.length; i++) {
+    if (array[i].status === status && array[i].hourId === predicate) {
+      return true;
+    }
+  }
+  return false;
+};
+
 let navigateCalendar = (currentDate: Date, flag: number): Date => {
   if (flag) {
     //forward
@@ -77,19 +99,14 @@ calendarNavigationBackward?.addEventListener("click", () => {
   fillCalendar(coach);
 });
 
-let WeekDays = [
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-  "Sunday",
-];
+type Booking = {
+  hourId: number;
+  status: boolean | null;
+};
 
 type Bookings = {
   dayId: number;
-  bookings: number[];
+  bookings: Booking[];
 };
 
 type Schedule = {
@@ -105,19 +122,25 @@ const coach: Schedule = {
   endHour: 17,
   bookings: [
     { dayId: 1, bookings: [] },
-    { dayId: 2, bookings: [12] },
+    { dayId: 2, bookings: [{ hourId: 12, status: true }] },
     { dayId: 3, bookings: [] },
-    { dayId: 4, bookings: [16] },
-    { dayId: 5, bookings: [13, 14] },
+    { dayId: 4, bookings: [{ hourId: 16, status: false }] },
+    {
+      dayId: 5,
+      bookings: [
+        { hourId: 13, status: true },
+        { hourId: 14, status: false },
+      ],
+    },
     { dayId: 6, bookings: [] },
     { dayId: 7, bookings: [] },
   ],
 };
 
-function event(calendarField: HTMLDivElement, i: number, j: number){
+function event(calendarField: HTMLDivElement, i: number, j: number) {
   calendarField.style.backgroundColor = "#0F766EB2";
-  coach.bookings[i - 1].bookings.push(j);
-};
+  coach.bookings[i - 1].bookings.push({ hourId: j, status: false });
+}
 
 const createCalendar = (coach: Schedule) => {
   for (let i = 1; i <= 7; i++) {
@@ -125,32 +148,6 @@ const createCalendar = (coach: Schedule) => {
     console.log("Day: V", i);
 
     for (let j = 0; j < 24; j++) {
-      // if (i === 0) {
-      //   Za skroz levu kolonu
-      //   let calendarHour = document.createElement("div");
-      //   calendarHour.classList.add("field");
-      //   calendarHour.innerText = String(j);
-      //   calendarHours?.appendChild(calendarHour);
-      // }
-      // if (i !== 0 && j === 0) {
-      //   Za skroz gornji red
-      //   let calendarWeekDay = document.createElement("div");
-      //   let calendarField = document.createElement("div");
-      //   let calendarWeekDayName = document.createElement("p");
-      //   let calendarDate = document.createElement("p");
-
-      //   calendarWeekDay.setAttribute("id", String(i));
-      //   calendarWeekDay.classList.add("column");
-      //   calendarField.classList.add("field");
-      //   calendarWeekDayName.innerText = WeekDays[i - 1];
-      //   calendarDate.innerText = dayjs(currentDate).format("DD");
-
-      //   calendarWeekDays?.appendChild(calendarWeekDay);
-      //   calendarWeekDay.appendChild(calendarField);
-      //   calendarField.appendChild(calendarWeekDayName);
-      //   calendarField.appendChild(calendarDate);
-      // }
-
       console.log("Hour: V", j);
 
       let calendarWeekDay = document.getElementById(String(i));
@@ -167,12 +164,16 @@ const createCalendar = (coach: Schedule) => {
       calendarField.classList.add("field");
 
       console.log(
-        "doesContain(coach.days, i) ", doesContain(coach.days, i),
-        " currentDate > today ", currentDate > today,
-        " j >= coach.startHour ", j >= coach.startHour,
-        " j < coach.endHour ", j < coach.endHour,
+        "doesContain(coach.days, i) ",
+        doesContain(coach.days, i),
+        " currentDate > today ",
+        currentDate > today,
+        " j >= coach.startHour ",
+        j >= coach.startHour,
+        " j < coach.endHour ",
+        j < coach.endHour,
         " doesContain(coach.bookings[i - 1].bookings, j) ",
-          doesContain(coach.bookings[i - 1].bookings, j)
+        doesContainBooking(coach.bookings[i - 1].bookings, j)
       );
 
       if (
@@ -180,18 +181,21 @@ const createCalendar = (coach: Schedule) => {
         currentDate > chosenDate && //If current day in week is later than the Monday's date
         j >= coach.startHour && //Current hour is later than coaches starting hour
         j < coach.endHour && //Current hour is earlier than coaches ending hour
-        !doesContain(coach.bookings[i - 1].bookings, j) //Current hour is not a booked term
+        !doesContainBooking(coach.bookings[i - 1].bookings, j) //Current hour is not a booked term
       ) {
         console.log("Dodao event listener");
-        
+
         calendarField.addEventListener("click", () =>
           event(calendarField, i, j)
         );
       } else if (
         i > 0 && //If we are in week day range (Monday to Sunday)
-        doesContain(coach.bookings[i - 1].bookings, j) //If current hour is a booked term
+        doesContainBooking(coach.bookings[i - 1].bookings, j) //If current hour is a booked term
       ) {
-        calendarField.style.backgroundColor = "#FF9F1C";
+        if (checkBookingStatus(coach.bookings[i - 1].bookings, j, true))
+          calendarField.style.backgroundColor = "#FF9F1C";
+        if (checkBookingStatus(coach.bookings[i - 1].bookings, j, false))
+          calendarField.style.backgroundColor = "purple";
       } else {
         //If the current hour is a non working hour
         calendarField.style.backgroundColor = "lightgrey";
@@ -238,7 +242,7 @@ const fillCalendar = (coach: Schedule) => {
           " j < coach.endHour ",
           j < coach.endHour,
           " doesContain(coach.bookings[i - 1].bookings, j) ",
-          doesContain(coach.bookings[i - 1].bookings, j)
+          doesContainBooking(coach.bookings[i - 1].bookings, j)
         );
 
         if (
@@ -246,19 +250,20 @@ const fillCalendar = (coach: Schedule) => {
           currentDate > today && //If current day in week is later than the Monday's date
           j >= coach.startHour && //Current hour is later than coaches starting hour
           j < coach.endHour && //Current hour is earlier than coaches ending hour
-          !doesContain(coach.bookings[i - 1].bookings, j) //Current hour is not a booked term
+          !doesContainBooking(coach.bookings[i - 1].bookings, j) //Current hour is not a booked term
         ) {
           console.log("Dodao event listener");
           newField.style.backgroundColor = "white";
 
-          newField.addEventListener("click", () =>
-            event(newField, i, j)
-          );
+          newField.addEventListener("click", () => event(newField, i, j));
         } else if (
           i > 0 && //If we are in week day range (Monday to Sunday)
-          doesContain(coach.bookings[i - 1].bookings, j) //If current hour is a booked term
+          doesContainBooking(coach.bookings[i - 1].bookings, j) //If current hour is a booked term
         ) {
-          newField.style.backgroundColor = "#FF9F1C";
+          if (checkBookingStatus(coach.bookings[i - 1].bookings, j, true))
+            newField.style.backgroundColor = "#FF9F1C";
+          if (checkBookingStatus(coach.bookings[i - 1].bookings, j, false))
+            newField.style.backgroundColor = "purple";
         } else {
           //If the current hour is a non working hour
           newField.style.backgroundColor = "lightgrey";
@@ -267,6 +272,5 @@ const fillCalendar = (coach: Schedule) => {
     }
   }
 };
-
 
 createCalendar(coach);
