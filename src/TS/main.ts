@@ -1,6 +1,7 @@
 import dayjs, { Dayjs } from "dayjs";
 import weekOfYear from "dayjs/plugin/weekOfYear";
 import { json } from "stream/consumers";
+import { DUMMY_DATA } from "./constants";
 dayjs.extend(weekOfYear);
 
 // let calendarWeekDays = document.getElementById("calendar--weekdays");
@@ -12,40 +13,19 @@ let today = new Date();
 let chosenDate = new Date();
 let chosenWeek = dayjs(chosenDate).week();
 
-type Booking = {
-  hourId: number;
-  status: boolean | null;
-};
-
-type Bookings = {
-  dayId: number;
-  bookings: Booking[];
-};
-
-type Schedule = {
-  days: number[];
-  startHour: number;
-  endHour: number;
-  bookings: Bookings[];
-};
-
-let coach: Schedule = {
-  days: [1, 2, 4, 5],
-  startHour: 9,
-  endHour: 17,
-  bookings: [
-    { dayId: 1, bookings: [] },
-    { dayId: 2, bookings: [] }, //{ hourId: 12, status: null }
-    { dayId: 3, bookings: [] },
-    { dayId: 4, bookings: [] },
-    { dayId: 5, bookings: [] },
-    { dayId: 6, bookings: [] },
-    { dayId: 7, bookings: [] },
-  ],
-};
+let coach = DUMMY_DATA;
+type BookingData = typeof coach;
+type Bookings = BookingData["bookings"];
+type BookingByDay = Bookings[number]["bookings"];
+// bookings: {
+//   bookingId: number;
+//   hourId: number;
+//   status: $Enums.booking_confirmed_by_coach | null;
+//   sessionType: number;
+//   isUsersSession: boolean;
 
 const loadCoachData = () => {
-  const localData = localStorage.getItem(String(chosenWeek));
+  const localData = localStorage.getItem(chosenWeek.toString());
   if (localData) {
     coach = JSON.parse(localData);
   }
@@ -81,7 +61,7 @@ const doesContain = (array: number[], predicate: number) => {
   return false;
 };
 
-const doesContainBooking = (array: Booking[], predicate: number) => {
+const doesContainBooking = (array: BookingByDay, predicate: number) => {
   for (let i = 0; i < array.length; i++) {
     if (array[i].hourId === predicate) {
       return true;
@@ -125,9 +105,9 @@ calendarNavigationBackward?.addEventListener("click", () => {
 });
 
 const checkBookingStatus = (
-  array: Booking[],
+  array: BookingByDay,
   predicate: number,
-  status: boolean | null
+  status: string | null
 ) => {
   for (let i = 0; i < array.length; i++) {
     if (array[i].status === status && array[i].hourId === predicate) {
@@ -137,7 +117,7 @@ const checkBookingStatus = (
   return false;
 };
 
-const spliceBooking = (coach: Schedule) => {
+const spliceBooking = (coach: BookingData) => {
   for (let i = 0; i < coach.bookings.length; i++) {
     for (let j = 0; j < coach.bookings[i].bookings.length; j++) {
       if (coach.bookings[i].bookings[j].status === null)
@@ -146,28 +126,62 @@ const spliceBooking = (coach: Schedule) => {
   }
 };
 
-function event(calendarField: HTMLDivElement, i: number, j: number) {
-  calendarField.style.backgroundColor = "#0F766EB2";
-  coach.bookings[i - 1].bookings.push({ hourId: j, status: false });
-  localStorage.setItem(String(chosenWeek), JSON.stringify(coach));
+function event(i: number, j: number) {
+  let popup = document.getElementById("displaypopup");
+  let book = document.getElementById("book");
+
+  let radio = document.getElementsByClassName("radio");
+
+  let option: [number];
+
+  for (let f = 0; f < radio.length; f++) {
+    radio[f].addEventListener("click", () => {
+      option = [f + 1];
+      radio[f].classList.add("selected");
+      for (let z = 0; z < radio.length; z++) {
+        if (z === f) {
+          continue;
+        }
+        radio[z].classList.remove("selected");
+      }
+      console.log(option);
+    });
+  }
+
+  book?.addEventListener("click", () => {
+    coach.bookings[i - 1].bookings.push({
+      hourId: j,
+      status: "pending",
+      bookingId: 123123,
+      isUsersSession: true,
+      sessionType: option[0],
+    });
+
+    option.splice(0, 1);
+
+    localStorage.setItem(String(chosenWeek), JSON.stringify(coach));
+    if (popup) popup.style.display = "none";
+  });
+
+  if (popup) popup.style.display = "block";
 }
 
-const createCalendar = (coach: Schedule) => {
+const createCalendar = (coach: BookingData) => {
   spliceBooking(coach);
 
   for (let i = 1; i <= 7; i++) {
     let currentDate = getDayOfWeek(getCurrentWeekMonday(chosenDate), i);
     for (let j = 0; j < 24; j++) {
-      let calendarWeekDay = document.getElementById(String(i));
+      let calendarWeekDay = document.getElementById(i.toString());
       let calendarField = document.createElement("div");
 
-      calendarField.classList.add("dayId-" + String(i) + "hourId-" + String(j));
+      calendarField.classList.add("dayId-" + i + "hourId-" + j);
 
       if (calendarWeekDay)
         calendarWeekDay.children[0].children[1].textContent =
           dayjs(currentDate).format("DD");
 
-      calendarField.innerText = dayjs(currentDate).format("DD/MM/YYYY");
+      // calendarField.innerText = dayjs(currentDate).format("DD/MM/YYYY");
 
       calendarField.classList.add("field");
 
@@ -185,41 +199,40 @@ const createCalendar = (coach: Schedule) => {
       // );
 
       if (
-        doesContain(coach.days, i) &&
-        currentDate > chosenDate && //If current day in week is later than the Monday's date
+        doesContain(coach.days, i) && //if current day is a working day
+        currentDate > today && //If current day in week is later than the Monday's date
         j >= coach.startHour && //Current hour is later than coaches starting hour
         j < coach.endHour && //Current hour is earlier than coaches ending hour
         !doesContainBooking(coach.bookings[i - 1].bookings, j) //Current hour is not a booked term
       ) {
+        console.log(i,j)
         calendarField.style.backgroundColor = "white";
-        calendarField.addEventListener("click", () =>
-          event(calendarField, i, j)
-        );
+        calendarField.textContent = "Book now";
+        calendarField.addEventListener("click", () => event(i, j));
       } else if (
         currentDate > today &&
         doesContainBooking(coach.bookings[i - 1].bookings, j) //If current hour is a booked term
       ) {
-        if (checkBookingStatus(coach.bookings[i - 1].bookings, j, true))
+        if (checkBookingStatus(coach.bookings[i - 1].bookings, j, "confirmed"))
           calendarField.style.backgroundColor = "#FF9F1C";
-        if (checkBookingStatus(coach.bookings[i - 1].bookings, j, false))
-          calendarField.style.backgroundColor = "purple";
+
+        if (checkBookingStatus(coach.bookings[i - 1].bookings, j, "pending"))
+          calendarField.style.backgroundColor = "#0F766E";
       } else {
         //If the current hour is a non working hour
         calendarField.style.backgroundColor = "lightgrey";
       }
-
       calendarWeekDay?.appendChild(calendarField);
     }
   }
 };
 
-const fillCalendar = (coach: Schedule) => {
+const fillCalendar = (coach: BookingData) => {
   spliceBooking(coach);
-  localStorage
   for (let i = 1; i <= 7; i++) {
     let currentDate = getDayOfWeek(getCurrentWeekMonday(chosenDate), i);
     for (let j = 0; j < 24; j++) {
-      let calendarWeekDay = document.getElementById(String(i));
+      let calendarWeekDay = document.getElementById(i.toString());
 
       if (calendarWeekDay) {
         calendarWeekDay.children[0].children[1].textContent =
@@ -232,11 +245,13 @@ const fillCalendar = (coach: Schedule) => {
           calendarWeekDay.querySelector(dayId + hourId)
         );
 
+        calendarField.textContent = "";
+
         // Clone the node to remove listeners and attributes
         let newField = calendarField.cloneNode(true) as HTMLDivElement;
         calendarField.parentNode?.replaceChild(newField, calendarField);
 
-        newField.innerText = dayjs(currentDate).format("DD/MM/YYYY");
+        // newField.innerText = dayjs(currentDate).format("DD/MM/YYYY");
 
         // console.log(
         //   "doesContain(coach.days, i) ",
@@ -259,16 +274,18 @@ const fillCalendar = (coach: Schedule) => {
           !doesContainBooking(coach.bookings[i - 1].bookings, j) //Current hour is not a booked term
         ) {
           newField.style.backgroundColor = "white";
-
-          newField.addEventListener("click", () => event(newField, i, j));
+          newField.textContent = "Book now";
+          newField.addEventListener("click", () => event(i, j));
         } else if (
           currentDate > today &&
           doesContainBooking(coach.bookings[i - 1].bookings, j) //If current hour is a booked term
         ) {
-          if (checkBookingStatus(coach.bookings[i - 1].bookings, j, true))
+          if (
+            checkBookingStatus(coach.bookings[i - 1].bookings, j, "confirmed")
+          )
             newField.style.backgroundColor = "#FF9F1C";
-          if (checkBookingStatus(coach.bookings[i - 1].bookings, j, false))
-            newField.style.backgroundColor = "purple";
+          if (checkBookingStatus(coach.bookings[i - 1].bookings, j, "pending"))
+            newField.style.backgroundColor = "#0F766E";
         } else {
           //If the current hour is a non working hour
           newField.style.backgroundColor = "lightgrey";
